@@ -8,8 +8,8 @@ export const productApi = createApi({
   }),
   tagTypes: ['Product'],
   endpoints: (builder) => ({
-    getProducts: builder.query<Product[], void>({
-      query: () => '/products',
+    getProducts: builder.query<Product[], {offset:number;limit:number}>({
+      query: ({offset,limit}) => `/products?offset=${offset}&limit=${limit}`,
       providesTags: ['Product'],
     }),
     getProductById: builder.query<Product, string>({
@@ -32,13 +32,26 @@ export const productApi = createApi({
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'Product', id }],
     }),
-    deleteProduct: builder.mutation<void, string>({
-      query: (id) => ({
-        url: `/products/${id}`,
-        method: 'DELETE',
+    deleteProduct:builder.mutation<void,string>({
+      query:(id)=>({
+        url:`/products/${id}`,
+        method:'DELETE',
       }),
+      onQueryStarted:async (id,{dispatch,queryFulfilled })=>{
+        const patchResult=dispatch(
+          productApi.util.updateQueryData('getProducts',{offset:0,limit:10},(draft)=>{
+            return draft.filter((product)=>product.id !=Number(id))
+          })
+        )
+
+        try{
+         await queryFulfilled;
+        }catch{
+         patchResult.undo()
+        }
+      },
       invalidatesTags: (result, error, id) => [{ type: 'Product', id }],
-    }),
+    })
   }),
 });
 
