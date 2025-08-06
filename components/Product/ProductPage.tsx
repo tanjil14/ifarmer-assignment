@@ -58,10 +58,15 @@ export default function ProductPage() {
     }
   };
 
+   const sortedProducts = [...products].sort(
+  (a, b) => new Date(b.creationAt).getTime() - new Date(a.creationAt).getTime()
+);
   //  filtering logic
-  const filtered = products
+  const filtered = sortedProducts
     .filter((p) => p.title.toLowerCase().includes(search.toLowerCase()))
     .filter((p) => (category ? p.category?.name === category : true));
+
+
 
   const totalPages = nextPageData.length > 0 ? page + 1 : page;
 

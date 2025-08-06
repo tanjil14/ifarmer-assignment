@@ -1,8 +1,9 @@
+import EditProductPage from '@/components/Product/EditProductPage'
 import React from 'react'
 
 const page = () => {
   return (
-    <div>page</div>
+    <div className='mt-6'><EditProductPage/></div>
   )
 }
 
