@@ -23,7 +23,7 @@ export default function EditProductPage() {
     try {
       await updateProduct({ id: id as string, data: values }).unwrap();
       toast.success("Product updated successfully");
-      router.push("/products");
+      router.push("/assignment-2");
     } catch {
       toast.error("Failed to update product");
     }
